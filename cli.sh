@@ -1,0 +1,1 @@
+python3 ./cli_demo.py --from_pretrained /mnt/d/LLM/models/visualglm-6b/

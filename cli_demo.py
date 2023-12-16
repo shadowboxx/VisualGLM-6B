@@ -21,7 +21,7 @@ def main():
     parser.add_argument("--temperature", type=float, default=.8, help='temperature for sampling')
     parser.add_argument("--english", action='store_true', help='only output English')
     parser.add_argument("--quant", choices=[8, 4], type=int, default=None, help='quantization bits')
-    parser.add_argument("--from_pretrained", type=str, default="visualglm-6b", help='pretrained ckpt')
+    parser.add_argument("--from_pretrained", type=str, default="/mnt/d/LLM/models/visualglm-6b", help='pretrained ckpt')
     parser.add_argument("--prompt_zh", type=str, default="描述这张图片。", help='Chinese prompt for the first round')
     parser.add_argument("--prompt_en", type=str, default="Describe the image.", help='English prompt for the first round')
     args = parser.parse_args()
@@ -35,7 +35,12 @@ def main():
         use_gpu_initialization=True if (torch.cuda.is_available() and args.quant is None) else False,
         device='cuda' if (torch.cuda.is_available() and args.quant is None) else 'cpu',
     ))
+
+    # model, args = VisualGLMModel.from_pretrained(args.from_pretrained, args)
+    # model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
+
     model = model.eval()
+
 
     if args.quant:
         quantize(model.transformer, args.quant)
@@ -44,7 +49,7 @@ def main():
 
     model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
 
-    tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(args.from_pretrained, trust_remote_code=True)
     if not args.english:
         print('欢迎使用 VisualGLM-6B 模型，输入图像URL或本地路径读图，继续输入内容对话，clear 重新开始，stop 终止程序')
     else:

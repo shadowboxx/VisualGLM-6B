@@ -3,9 +3,22 @@ import platform
 import signal
 from transformers import AutoTokenizer, AutoModel
 import torch
+import argparse
 
-tokenizer = AutoTokenizer.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True)
-model = AutoModel.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True).half().cuda()
+parser = argparse.ArgumentParser()
+parser.add_argument("--max_length", type=int, default=2048, help='max length of the total sequence')
+parser.add_argument("--top_p", type=float, default=0.4, help='top p for nucleus sampling')
+parser.add_argument("--top_k", type=int, default=100, help='top k for top k sampling')
+parser.add_argument("--temperature", type=float, default=.8, help='temperature for sampling')
+parser.add_argument("--english", action='store_true', help='only output English')
+parser.add_argument("--quant", choices=[8, 4], type=int, default=None, help='quantization bits')
+parser.add_argument("--from_pretrained", type=str, default="/mnt/d/LLM/models/visualglm-6b/", help='pretrained ckpt')
+parser.add_argument("--prompt_zh", type=str, default="描述这张图片。", help='Chinese prompt for the first round')
+parser.add_argument("--prompt_en", type=str, default="Describe the image.", help='English prompt for the first round')
+args = parser.parse_args()
+
+tokenizer = AutoTokenizer.from_pretrained(args.from_pretrained, trust_remote_code=True)
+model = AutoModel.from_pretrained(args.from_pretrained, trust_remote_code=True).half().cuda()
 model = model.eval()
 
 os_name = platform.system()
