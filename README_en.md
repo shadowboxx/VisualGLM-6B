@@ -21,7 +21,7 @@ VisualGLM-6B is trained using the [SwissArmyTransformer](https://github.com/THUD
 
 However, as VisualGLM-6B is still at the v1 stage, it is known to have quite a few [**limitations**](#Limitations), such as factual inaccuracy/model hallucination in image description, lack of capturing image detail information, and some limitations from the language model. Please be aware of these issues and evaluate the potential risks before using. In future versions of VisualGLM, we will strive to optimize these issues.
 
-With model quantization technology, users can deploy locally on consumer-grade graphics cards (requiring as little as 8.7G memory under INT4 quantization level).
+With model quantization technology, users can deploy locally on consumer-grade graphics cards (requiring as little as 6.3G memory under INT4 quantization level).
 
 ## Examples
 VisualGLM-6B can answer questions related to image description.
@@ -209,8 +209,8 @@ model = AutoModel.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True).
 In the sat implementation, you need to change the loading location to 'cpu' first, and then perform quantization. Here's how, see cli_demo.py for details:
 ```python
 from sat.quantization.kernels import quantize
-model = quantize(model.transformer, args.quant).cuda()
-# Specify model.transformer to only quantize ChatGLM, as the error is larger when quantizing ViT
+model = quantize(model, args.quant).cuda()
+# only need 7GB GPU memory to inference
 ```
 
 ## Limitations

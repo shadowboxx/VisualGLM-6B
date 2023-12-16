@@ -26,7 +26,7 @@ VisualGLM-6B 依靠来自于 [CogView](https://arxiv.org/abs/2105.13290) 数据�
 
 VisualGLM-6B 由 [SwissArmyTransformer](https://github.com/THUDM/SwissArmyTransformer)(简称`sat`) 库训练，这是一个支持Transformer灵活修改、训练的工具库，支持Lora、P-tuning等参数高效微调方法。本项目提供了符合用户习惯的huggingface接口，也提供了基于sat的接口。
 
-结合模型量化技术，用户可以在消费级的显卡上进行本地部署（INT4量化级别下最低只需8.7G显存）。
+结合模型量化技术，用户可以在消费级的显卡上进行本地部署（INT4量化级别下最低只需6.3G显存）。
 
 -----
 
@@ -304,8 +304,8 @@ model = AutoModel.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True).
 在sat实现中，需先传参将加载位置改为`cpu`，再进行量化。方法如下，详见`cli_demo.py`：
 ```python
 from sat.quantization.kernels import quantize
-model = quantize(model.transformer, args.quant).cuda()
-# 指定 model.transformer 只量化 ChatGLM，ViT 量化时误差较大
+quantize(model, args.quant).cuda()
+# 只需要 7GB 显存即可推理
 ```
 
 ## 局限性

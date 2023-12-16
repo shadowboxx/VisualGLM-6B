@@ -43,7 +43,7 @@ def main():
 
 
     if args.quant:
-        quantize(model.transformer, args.quant)
+        quantize(model, args.quant)
         if torch.cuda.is_available():
             model = model.cuda()
 
